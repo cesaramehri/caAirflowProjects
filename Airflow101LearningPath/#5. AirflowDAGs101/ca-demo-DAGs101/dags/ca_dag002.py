@@ -3,23 +3,27 @@ from datetime import datetime
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 
-with DAG(dag_id='check_dag', schedule='@daily', 
-        start_date=datetime(2023, 1, 1), catchup=False,
-        description='DAG to check data', tags=['data_engineering']):
+# Define your DAG Object
+with DAG(dag_id='ca_dag002', 
+         schedule='@daily', 
+         start_date=datetime(2024, 12, 10), 
+         description='DAG to check data deposit', 
+         tags = ['DEs'],
+         catchup=False
+    ):
     
-    create_file = BashOperator(
-        task_id='create_file',
-        bash_command='echo "Hi there!" >/tmp/dummy'
-    )
+    # Create your tasks
+    create_file_task = BashOperator(task_id='create_file_task',
+                                    bash_command='echo "This is my second dag!" >./tmp/dummy/file.txt'
+                                )
 
-    check_file_exists = BashOperator(
-        task_id='check_file_exists',
-        bash_command='test -f /tmp/dummy'
-    )
+    check_file_exists_task = BashOperator(task_id='check_file_exists_task',
+                                          bash_command='test -f ./tmp/dummy/file.txt'
+                                        )
 
-    read_file = PythonOperator(
-        task_id='read_file',
-        python_callable=lambda: print(open('/tmp/dummy', 'rb').read())
-    )
+    read_file_task = PythonOperator(task_id='read_file_task',
+                                    python_callable=lambda: print(open('./tmp/dummy/file.txt', 'rb').read())
+                                )
 
-    create_file >> check_file_exists >> read_file
+    # Orchestrate your Tasks
+    create_file_task >> check_file_exists_task >> read_file_task
