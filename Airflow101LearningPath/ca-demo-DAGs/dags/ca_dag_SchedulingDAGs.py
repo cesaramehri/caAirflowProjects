@@ -1,3 +1,4 @@
+from airflow import DAG
 from airflow.decorators import dag, task
 from airflow.operators.python import PythonOperator
 import pendulum
@@ -20,4 +21,4 @@ with DAG(dag_id = 'ca_dag_SchedulingDAGs',
                         )
 
     # Orchestrate your Tasks
-    task_1()
+    task_1
