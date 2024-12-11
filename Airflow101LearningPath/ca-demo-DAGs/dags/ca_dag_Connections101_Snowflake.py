@@ -14,7 +14,9 @@ with DAG(dag_id = 'ca_dag_Connections101_Snowflake',
     
     # Create your tasks
     execute_request_task = SnowflakeOperator(task_id = 'execute_request_task',
-                                             conn_id = 'snowflake',
+                                             snowflake_conn_id = 'snowflake_conn',
                                              sql = 'SELECT * FROM GARDEN_PLANTS.VEGGIES.ROOT_DEPTH'
 
     )
+
+    # 
