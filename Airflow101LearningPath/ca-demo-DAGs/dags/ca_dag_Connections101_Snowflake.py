@@ -10,14 +10,11 @@ with DAG(dag_id = 'ca_dag_Connections101_Snowflake',
          schedule_interval = '@daily',
          tags = ['DEs'],
          catchup = False 
-    ):
+    )as dag:
     
     # Create your tasks
     execute_request_task = SnowflakeOperator(task_id = 'execute_request_task',
-                                             conn_id = 'snowflake_conn',
+                                             conn_id = 'snowflake',
                                              sql = 'SELECT * FROM GARDEN_PLANTS.VEGGIES.ROOT_DEPTH'
 
     )
-
-    # Orchestrate Tasks
-    execute_request_task
