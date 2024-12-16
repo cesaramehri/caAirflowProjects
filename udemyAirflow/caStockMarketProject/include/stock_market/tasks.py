@@ -52,7 +52,6 @@ def _store_prices(stock_prices_str):
 
 # Extract data from a bucket
 def _get_formatted_csv(path_location):
-    #path = 'stock-market/AAPL'
     # Connect to minio client
     minio = BaseHook.get_connection('minio_conn')
     client = Minio(endpoint = minio.extra_dejson['endpoint_url'].split('//')[1],
