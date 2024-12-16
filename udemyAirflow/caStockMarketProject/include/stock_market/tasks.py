@@ -51,7 +51,7 @@ def _store_prices(stock_prices_str):
 
 
 # Extract data from a bucket
-def _get_formatted_csv(path):
+def _get_formatted_csv(path_location):
     #path = 'stock-market/AAPL'
     # Connect to minio client
     minio = BaseHook.get_connection('minio_conn')
@@ -61,13 +61,7 @@ def _get_formatted_csv(path):
                    secure = False
             )
     
-    # Define object params
-    bucket_name = 'stock-market'
-    prefix_name = f"{path.split('/')[1]}/formatted_prices/"
-    objects = client.list_objects(bucket_name, prefix=prefix_name, recursive=True)
-
-    # Loop through
-    for obj in objects:
-        if obj.object_name.endswith('.csv'):
-            return obj.object_name
-    raise AirflowNotFoundException('csv file not found')
+    #
+    objects = client.list_objects(f'stock-market', prefix='AAPL/formatted_prices/', recursive=True)
+    csv_file = [obj for obj in objects if obj.object_name.endswith('.csv')][0]
+    return f's3://{csv_file.bucket_name}/{csv_file.object_name}'
