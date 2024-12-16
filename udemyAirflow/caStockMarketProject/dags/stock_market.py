@@ -83,9 +83,13 @@ def stock_market():
         # First, create a connection for postgres (check postgres/30.postgres_conn)
         # Second, USe astro-sdk -> load_file_operator (pre-installed with the astro cli)
     load_to_dw = aql.load_file(task_id = 'load_to_dw',
-                               input_file=File(path='{{ ti.xcom_pull(task_ids="get_formatted_csv") }}', conn_id='minio_conn'),
+                               input_file=File(path=f"s3://{BUCKET_NAME}/{{{{ task_instance.xcom_pull(task_ids='get_formatted_csv')}}}}", conn_id='minio_conn'),
                                output_table = Table(name=SYMBOL, conn_id='postgres', metadata=Metadata(schema='public'))
                             )
+    # load_to_dw = aql.load_file(task_id = 'load_to_dw',
+    #                            input_file=File(path='{{ ti.xcom_pull(task_ids="get_formatted_csv") }}', conn_id='minio_conn'),
+    #                            output_table = Table(name=SYMBOL, conn_id='postgres', metadata=Metadata(schema='public'))
+    #                         )
 
     # Define your Dependencies
     is_api_available() >> get_stock_prices >> store_stock_prices >> format_prices >> get_formatted_csv >> load_to_dw
